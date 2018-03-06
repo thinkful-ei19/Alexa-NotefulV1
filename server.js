@@ -15,6 +15,7 @@ const morgan = require('morgan');
 app.use(morgan('common'));
 
 app.use(express.static('public'));
+app.use(express.json());
 
 
 app.get('/api/notes/', (req, res, next) => {
@@ -23,12 +24,12 @@ app.get('/api/notes/', (req, res, next) => {
   notes.filter(searchTerm, (err, list) => {
     if (err) {
       return next(err);
+    } if (list) {
+      res.json(list);
+    } else {
+      res.json(data);
     }
-    res.json(list);
   });
-  else {
-    res.json(data);
-  }
 });
 
 
@@ -38,17 +39,40 @@ app.get('/api/notes/:id', (req, res) => {
 
   notes.find(id, (err, item) => {
     if (err) {
-    console.error(err);    
-  } if (item) {
-  res.json(data.find(item => item.id === Number(id)));
-  console.log(item);
-   } else {
-     console.log('not found');
-   }
+      console.error(err);    
+    } if (item) {
+      res.json(data.find(item => item.id === Number(id)));
+      console.log(item);
+    } else {
+      console.log('not found');
+    }
   });
 });
 
+app.put('/api/notes/:id', (req, res, next) => {
+  const id = req.params.id;
 
+  /***** Never trust users - validate input *****/
+  const updateObj = {};
+  const updateFields = ['title', 'content'];
+
+  updateFields.forEach(field => {
+    if (field in req.body) {
+      updateObj[field] = req.body[field];
+    }
+  });
+
+  notes.update(id, updateObj, (err, item) => {
+    if (err) {
+      return next(err);
+    }
+    if (item) {
+      res.json(item);
+    } else {
+      next();
+    }
+  });
+});
 
 
 // app.get('/boom', (req, res, next) => {
