@@ -3,21 +3,32 @@
 const express = require('express');
 
 // TEMP: Simple In-Memory Database
-const data = require('./db/notes.json');
+const data = require('./db/notes');
 
 
+//Create an Express application
 const app = express();
+
+
 app.use(express.static('public'));
 
 app.get('/api/notes/', (req, res) => {
   //http://localhost:8080/api/notes/?searchTerm=cats
   const searchTerm = req.query.searchTerm;
-  const filteredNote = data.filter(note => note.title.includes(searchTerm)) ;
-  res.json(filteredNote);
+  if (searchTerm) {
+    // const filteredNote = data.filter(note => note.title.includes(searchTerm)) ;
+  // res.json(filteredNote);
+    const filteredList = data.filter(function(item) {
+      return item.title.includes(searchTerm);
+    });
+    res.json(filteredList);
+  } else {
+    res.json(data);
+  }
 });
 
 const findById = (id) => {
-  return data.find(note => note.id === id);
+  return data.find(note => note.id === Number(id));
 };
 
 app.get('/api/notes/:id', (req, res) => {
