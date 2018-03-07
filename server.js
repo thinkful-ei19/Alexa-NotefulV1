@@ -17,7 +17,7 @@ app.use(express.static('public'));
 app.use(express.json());
 
 
-app.use('/v1', notesRouter);
+app.use('/', notesRouter);
 
 
 app.use(function (req, res, next) {

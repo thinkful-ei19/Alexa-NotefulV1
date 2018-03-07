@@ -7,6 +7,7 @@ const store = (function(){
     const newId = store.find(note => note.id === id);
     Object.assign(newId, newData);
   };
+  
   return {
     notes: [],
     currentNote: false,
