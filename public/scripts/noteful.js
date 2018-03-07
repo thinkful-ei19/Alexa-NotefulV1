@@ -72,17 +72,38 @@ const noteful = (function () {
       const editForm = $(event.currentTarget);
 
       const noteObj = {
+        id: store.currentNote.id,
         title: editForm.find('.js-note-title-entry').val(),
         content: editForm.find('.js-note-content-entry').val()
       };
 
-      noteObj.id = store.currentNote.id;
+      if(store.currentNote.id) {
+        api.update(store.currentNote.id, noteObj, updateResponse => {
+          store.currentNote = updateResponse;
+         
+          api.search(store.currentSearchTerm, updateResponse => {
+            store.notes = updateResponse;
+            render();
+          });
+        });
+      } else {
+        api.create(noteObj, updateResponse => {
+          store.currentNote = updateResponse;
 
-      api.update(noteObj.id, noteObj, updateResponse => {
-        store.currentNote = updateResponse;
-        store.findAndUpdate(noteObj.id, updateResponse);
-        render();
-      });
+          api.search(store.currentSearchTerm, updateResponse => {
+            store.notes = updateResponse;
+            render();
+          });
+        });
+      }
+
+      // noteObj.id = store.currentNote.id;
+
+      // api.update(noteObj.id, noteObj, updateResponse => {
+      //   store.currentNote = updateResponse;
+      //   store.findAndUpdate(noteObj.id, updateResponse);
+      //   render();
+      // });
 
     });
   }
@@ -90,9 +111,8 @@ const noteful = (function () {
   function handleNoteStartNewSubmit() {
     $('.js-start-new-note-form').on('submit', event => {
       event.preventDefault();
-
-      console.log('Start New Note, coming soon...');
-
+      store.currentNote = false;
+      render();
     });
   }
 
