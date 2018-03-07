@@ -10,11 +10,13 @@ const notes = simDB.initialize(data);
 
 //Create an Express application
 const app = express();
+
 const morgan = require('morgan');
 
 app.use(morgan('common'));
 
 app.use(express.static('public'));
+
 app.use(express.json());
 
 
@@ -24,31 +26,27 @@ app.get('/api/notes/', (req, res, next) => {
   notes.filter(searchTerm, (err, list) => {
     if (err) {
       return next(err);
-    } if (list) {
+    } 
       res.json(list);
-    } else {
-      res.json(data);
-    }
   });
 });
 
 
 app.get('/api/notes/:id', (req, res) => {
-  // console.log(req.params.id);
   const {id} = req.params;
 
   notes.find(id, (err, item) => {
     if (err) {
-      console.error(err);    
+      return next(err);    
     } if (item) {
-      res.json(data.find(item => item.id === Number(id)));
-      console.log(item);
+      res.json(item);
     } else {
-      console.log('not found');
+      next();
     }
   });
 });
 
+//Put update an item
 app.put('/api/notes/:id', (req, res, next) => {
   const id = req.params.id;
 
@@ -61,6 +59,12 @@ app.put('/api/notes/:id', (req, res, next) => {
       updateObj[field] = req.body[field];
     }
   });
+
+  if (!updateObj.title) {
+    const err = new Error('Missing title');
+    err.status = 400;
+    return next(err);
+  }
 
   notes.update(id, updateObj, (err, item) => {
     if (err) {
@@ -80,7 +84,7 @@ app.put('/api/notes/:id', (req, res, next) => {
 // });
 
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   res.status(404).json({ message: 'Not Found' });
 });
