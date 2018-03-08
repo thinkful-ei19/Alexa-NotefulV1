@@ -44,9 +44,13 @@ const api = {
   delete: function(id) {
     return $.ajax({
       type: 'DELETE',
-      url: `api/notes/${id}`,
+      url: `/api/notes/${id}`,
       contentType: 'application/json',
       dataType: 'json',
     });
   }
 }; 
+
+  
+
+

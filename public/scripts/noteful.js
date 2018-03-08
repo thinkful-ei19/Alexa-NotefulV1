@@ -42,11 +42,11 @@ const noteful = (function () {
 
       const noteId = getNoteIdFromElement(event.currentTarget);
 
-      api.details(noteId, detailsResponse => {
-        store.currentNote = detailsResponse;
-        render();
-      });
-
+      api.details(noteId)
+        .then(detailsResponse => {
+          store.currentNote = detailsResponse;
+          render();
+        });
     });
   }
 
@@ -57,11 +57,11 @@ const noteful = (function () {
       const searchTerm = $('.js-note-search-entry').val();
       store.currentSearchTerm = searchTerm ? { searchTerm } : {};
 
-      api.search(store.currentSearchTerm, searchResponse => {
-        store.notes = searchResponse;
-        render();
-      });
-
+      api.search(store.currentSearchTerm)
+        .then(searchResponse => {
+          store.notes = searchResponse;
+          render();
+        });
     });
   }
 
@@ -79,33 +79,28 @@ const noteful = (function () {
 
       //checking to see if we are updating note or subiting new note
       if(store.currentNote.id) {
-        api.update(store.currentNote.id, noteObj, updateResponse => {
-          store.currentNote = updateResponse;
-         
-          api.search(store.currentSearchTerm, updateResponse => {
-            store.notes = updateResponse;
-            render();
-          });
-        });
+        api.update(store.currentNote.id, noteObj)
+          .then(updateResponse => {
+            store.currentNote = updateResponse;
+          
+            api.search(store.currentSearchTerm)
+              .then(updateResponse => {
+                store.notes = updateResponse;
+                render();
+              });
+          });   
       } else {
-        api.create(noteObj, updateResponse => {
-          store.currentNote = updateResponse;
+        api.create(noteObj)
+          .then(updateResponse => {
+            store.currentNote = updateResponse;
 
-          api.search(store.currentSearchTerm, updateResponse => {
-            store.notes = updateResponse;
-            render();
+            api.search(store.currentSearchTerm)
+              .then(updateResponse => {
+                store.notes = updateResponse;
+                render();
+              });
           });
-        });
       }
-
-      // noteObj.id = store.currentNote.id;
-
-      // api.update(noteObj.id, noteObj, updateResponse => {
-      //   store.currentNote = updateResponse;
-      //   store.findAndUpdate(noteObj.id, updateResponse);
-      //   render();
-      // });
-
     });
   }
 
@@ -125,16 +120,24 @@ const noteful = (function () {
 
       //api responds with no content
       //search to update list with deleted item
-      api.delete(noteId, () => {
-        api.search(store.currentSearchTerm, searchResponse => {
+      // api.delete(noteId, () => {
+      //   api.search(store.currentSearchTerm, searchResponse => {
+      //     store.notes = searchResponse;
+      //   if (noteId === store.currentNote.id) {
+      //     store.currentNote = {};
+      //   }
+      //   render();
+      // });
+      // });
+      api.delete(noteId)
+        .then(() => api.search(store.currentSearchTerm))
+        .then(searchResponse => {
           store.notes = searchResponse;
           if (noteId === store.currentNote.id) {
             store.currentNote = {};
           }
           render();
         });
-      });
-      
     });
   }
 
