@@ -22,7 +22,7 @@ router.get('/api/notes/', (req, res, next) => {
 });
   
 //Get a single item  
-router.get('/api/notes/:id', (req, res) => {
+router.get('/api/notes/:id', (req, res, next) => {
   const {id} = req.params;
   
   notes.find(id, (err, item) => {
@@ -91,6 +91,22 @@ router.post('/api/notes', (req, res, next) => {
     }
   });
 });
+
+router.delete('/api/notes/:id', (req, res, next) => {
+  const id = req.params.id;
+  
+  notes.delete(id, (err, result) => {
+    if (err) {
+      return next(err);
+    }
+    if (result) {
+      res.sendStatus(204);
+    } else {
+      next();
+    }
+  });
+});
+
 
 module.exports = router;
 
