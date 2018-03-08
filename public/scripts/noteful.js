@@ -118,17 +118,6 @@ const noteful = (function () {
 
       const noteId = getNoteIdFromElement(event.currentTarget);
 
-      //api responds with no content
-      //search to update list with deleted item
-      // api.delete(noteId, () => {
-      //   api.search(store.currentSearchTerm, searchResponse => {
-      //     store.notes = searchResponse;
-      //   if (noteId === store.currentNote.id) {
-      //     store.currentNote = {};
-      //   }
-      //   render();
-      // });
-      // });
       api.delete(noteId)
         .then(() => api.search(store.currentSearchTerm))
         .then(searchResponse => {
