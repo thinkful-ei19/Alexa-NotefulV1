@@ -77,6 +77,7 @@ const noteful = (function () {
         content: editForm.find('.js-note-content-entry').val()
       };
 
+      //checking to see if we are updating note or subiting new note
       if(store.currentNote.id) {
         api.update(store.currentNote.id, noteObj, updateResponse => {
           store.currentNote = updateResponse;
@@ -122,6 +123,8 @@ const noteful = (function () {
 
       const noteId = getNoteIdFromElement(event.currentTarget);
 
+      //api responds with no content
+      //search to update list with deleted item
       api.delete(noteId, () => {
         api.search(store.currentSearchTerm, searchResponse => {
           store.notes = searchResponse;
