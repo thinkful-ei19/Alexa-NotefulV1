@@ -19,6 +19,22 @@ describe('Reality check', function () {
   });
 });
 
+//review this...
+describe('Noteful App', function () {
+
+  let server;
+  before(function () {
+    return app.startServer()
+      .then(instance => server = instance);
+  });
+
+  after(function () {
+    return server.stopServer();
+  });
+});
+
+
+
 describe('Express static', function () {
 
   it('GET request "/" should return the index page', function () {
@@ -45,3 +61,134 @@ describe('404 handler', function () {
   });
 
 });
+
+describe('GET /api/notes', function () {
+
+  it('should return default of 10 notes', function() {
+    return chai.request(app)
+      .get('/api/notes')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.a('array');
+        expect(res.body).to.have.length(10);
+      });
+  });
+  //more tests here...
+});
+
+describe('GET /api/notes/:id', function () {
+  it('should return note with specified id', function() {
+    return chai.request(app)
+      .get('/api/notes/1001')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.an('object');
+        expect(res.body.id).to.equal(1001);
+        expect(res.body.title).to.equal("What the government doesn't want you to know about cats");
+      });
+  });
+
+  it.only('should respond with 404 for invalid id', function () {
+    return chai.request(app)
+      .get('api/notes/1646')
+      .catch(err => err.response)
+      .then(function (res) {
+        expect(res).to.have.status(404);
+      });
+  });
+});
+
+describe('POST /api/notes', function() {
+  it('should create and return a new note when data is valid', function () {
+    const newNote = {
+      title: 'New note about cats',
+      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum nunc a semper dignissim.',
+    };
+    return chai.request(app)
+      .post('/api/notes')
+      .send(newNote)
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        expect(res).to.be.json;
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.include.keys('id', 'title', 'content');
+        expect(res.body.id).to.equal(1010);
+        expect(res.body.title).to.equal(newNote.title);
+        expect(res.body.content).to.equal(newNote.content);
+      });
+  });
+
+  it('should return an error when missing \'title\' field', function() {
+    const newNote = {
+      id: 2018,
+    };
+    return chai.request(app)
+      .post('/api/notes')
+      .send(newNote)
+      .catch(err => err.response)
+      .then(res => {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json;
+        expect(res.body).to.be.a('object');
+        expect(res.body.message).to.equal('Missing \'title\' in request body');
+      });
+  });
+});
+
+describe('PUT /api/notes/:id', function() {
+  it('should update the note with specified id', function() {
+    const updatedNote = {
+      title: 'Updating note',
+      content: 'Testing to see if note updated'
+    };
+    return chai.request(app)
+      .put('/api/notes/1005')
+      .send(updatedNote)
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.a('object');
+        expect(res.body).to.include.keys('id', 'title', 'content');
+
+        expect(res.body.id).to.equal(1005);
+        expect(res.body.title).to.equal(updatedNote.title);
+        expect(res.body.content).to.equal(updatedNote.content);
+      });
+  });
+
+  it.only('should respond with a 404 for an invalid id', function() {
+    const updatedNote = {
+      title: 'Updating note',
+      content: 'Testing to see if note updated'
+    };
+    return chai.request(app)
+      .put('/api/notes/1005')
+      .send(updatedNote)
+      .catch(err => err.response)
+      .then(res => {
+        expect(res).to.have.status(404);
+      });
+  });
+});
+
+describe('DELETE  /api/notes/:id', function() {
+  it('should delete an note by specified id', function() {
+    return chai.request(app)
+      .delete('/api/notes/1005')
+      .then( function(res) {
+        expect(res).to.have.status(204);
+      });
+  });
+
+  it('should respond with a 404 for an invalid id', function () {
+    return chai.request(app)
+      .delete('/api/notes/9999')
+      .catch(err => err.response)
+      .then(res => {
+        expect(res).to.have.status(404);
+      });
+  });
+});
+
