@@ -34,6 +34,15 @@ app.use(function (err, req, res, next) {
   });
 });
 
+app.startServer = function (port) {
+  return new Promise((resolve, reject) => {
+    this.listen(port, function () {
+      this.stopServer = require('util').promisify(this.close);
+      resolve(this);
+    }).on('error', reject);
+  });
+};
+
 //Listen for incoming connections
 if(require.main === module) {
   app.listen(PORT, function () {
