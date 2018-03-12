@@ -62,7 +62,7 @@ describe('Noteful App', function () {
 
   describe('GET /api/notes', function () {
 
-    it.only('should return default of 10 notes', function() {
+    it('should return default of 10 notes', function() {
       return chai.request(app)
         .get('/api/notes')
         .then(function (res) {
