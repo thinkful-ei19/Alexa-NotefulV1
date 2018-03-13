@@ -1,2 +1,13 @@
 language: node_js
 node_js: node
+
+
+# env:
+# - NODE_ENV=test
+# deploy:
+#  provider: heroku
+#  api_key:
+#    secure: sDX5Hxf4Eo7rSVq4JGqVg7bJ6Tq1XjVavZX+09FmaWSP3NKJh1OrgGODAe93xq3iJxBw+qHyI32uzxYQiywsvlYs57NYDAwQuPmGkxATxXWObPURTZANvf9mVL6B9dnpjRyiqOk2ijCwYMfUSZCFoJpVV+MeoOieaGCI28lCc90PsBlb1TkWI8zulqc6gZZUW/MtEYvD7g67X06x93URzXKgWVkq25WlnL+HcAVn0Jcc2aVxP5p3OzTWpjIOy/HyHN7k0UwJEreZpYEoc+P4tWDnXkCtZEgdiUFVtSOKNGwXRr7C78YrhHzYJnBJtduftWmjlWRLDa/GaHQgb+xtkOz4kgXaVkybDhiqefYsZ8/3XnOmWkL6YeaXfWMcgn3JHI3xD/9bTXrc9LgIjUsRgIVjocyUYAFTfjN3BLDUryBk86wtuB0191JPx9kuuN9SFHB1y2oCdGaiCFWN9uZOba8lYLcLyrxHSOg81ebLq/xtuh9B1xLRygytZeJCuk312oaqtJmjLy+zDLpXj68aSNPIzqxhqOj3wlYi8NS5O1qmM04N0+Mq9wknt9BryaJr4PMUwrSFZQgSpcJZz13RDKSMWhXsKBD0x+8vF2F60vvTuqmnnRWVdefY2jhQP4IAraGUkfyKfSK2HB1KXGgS0gtg5uoYc9cP0c4wKzRvnEg=
+#  app: noteful-app-v1
+#  on:
+#    repo: thinkful-ei19/noteful-app-v1
