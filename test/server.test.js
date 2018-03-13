@@ -128,7 +128,7 @@ describe('Noteful App', function () {
     //FIGURE OUT WHY 404 IS FAILING
     it('should respond with 404 for invalid id', function () {
       return chai.request(app)
-        .get('api/notes/1646')
+        .get('/api/notes/1646')
         .catch(err => err.response)
         .then(function (res) {
           expect(res).to.have.status(404);
@@ -168,7 +168,7 @@ describe('Noteful App', function () {
           expect(res).to.have.status(400);
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
-          expect(res.body.message).to.equal('Missing \'title\' in request body');
+          expect(res.body.message).to.equal('Missing title in request body');
         });
     });
   });
@@ -200,7 +200,7 @@ describe('Noteful App', function () {
         content: 'Testing to see if note updated'
       };
       return chai.request(app)
-        .put('/api/notes/1005')
+        .put('/api/notes/9999')
         .send(updatedNote)
         .catch(err => err.response)
         .then(res => {
@@ -221,7 +221,7 @@ describe('Noteful App', function () {
           expect(res).to.have.status(400);
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
-          expect(res.body.message).to.equal('Missing `title` in request body');
+          expect(res.body.message).to.equal('Missing title');
         });
     });
 
