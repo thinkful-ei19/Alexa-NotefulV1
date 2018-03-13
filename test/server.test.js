@@ -125,7 +125,7 @@ describe('Noteful App', function () {
           expect(res.body.title).to.equal("What the government doesn't want you to know about cats");
         });
     });
-    //FIGURE OUT WHY 404 IS FAILING
+    //FIGURE OUT WHY 404 IS FAILING-
     it('should respond with 404 for invalid id', function () {
       return chai.request(app)
         .get('/api/notes/1646')
